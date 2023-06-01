@@ -42,3 +42,22 @@ exports.makePaymentRequest = function(order, successCallback, errorCallback) {
         }, 'ApplePayGooglePay', 'makePaymentRequest', [order]);
     });
 };
+
+/**
+ * Enables test environment mode android only
+ * @param {object} order
+ * @param {Function} [successCallback] - Optional success callback, recieves message object.
+ * @param {Function} [errorCallback] - Optional error callback, recieves message object.
+ * @returns {Promise}
+ */
+exports.setDebugMode = function(order, successCallback, errorCallback) {
+    return new Promise(function(resolve, reject) {
+        exec(function(message) {
+            executeCallback(successCallback, message);
+            resolve(message);
+        }, function(message) {
+            executeCallback(errorCallback, message);
+            reject(message);
+        }, 'ApplePayGooglePay', 'setDebugMode', [order]);
+    });
+};

@@ -24,6 +24,7 @@ import java.util.Arrays;
 public class ApplePayGooglePay extends CordovaPlugin {
     private static final int LOAD_PAYMENT_DATA_REQUEST_CODE = 991;
     private PaymentsClient paymentsClient;
+    private boolean isTestEnv = false;
 
     private CallbackContext callbackContext;
 
@@ -46,7 +47,13 @@ public class ApplePayGooglePay extends CordovaPlugin {
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        Wallet.WalletOptions walletOptions = new Wallet.WalletOptions.Builder().setEnvironment(WalletConstants.ENVIRONMENT_PRODUCTION).build();
+        if (action.equals("setDebugMode")) {
+            this.setDebugMode(callbackContext);
+            return true;
+        }
+        Wallet.WalletOptions walletOptions = new Wallet.WalletOptions.Builder()
+        .setEnvironment(this.isTestEnv ? WalletConstants.ENVIRONMENT_TEST : WalletConstants.ENVIRONMENT_PRODUCTION)
+        .build();
         Activity activity = cordova.getActivity();
 
         paymentsClient = Wallet.getPaymentsClient(activity, walletOptions);
@@ -95,6 +102,13 @@ public class ApplePayGooglePay extends CordovaPlugin {
                 callbackContext.error(status.getStatusMessage());
                 break;
         }
+    }
+
+    private void setDebugMode(CallbackContext callbackContext) throws JSONException {
+        if (!this.isTestEnv) {
+            this.isTestEnv = true;
+        }
+        callbackContext.success();
     }
 
     private void canMakePayments(JSONArray args, CallbackContext callbackContext) throws JSONException {
