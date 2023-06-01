@@ -98,3 +98,6 @@ request.gpMerchantId = 'XXXXXXXXXXXX'; // obtain it at https://pay.google.com/bu
 ```
 
 Also, on Android checking payment availability calling `canMakePayments()` always returns false even if user has a valid card attached to GooglePay.
+
+
+`setDebugMode()` Also available this method to use sdk test environment.
